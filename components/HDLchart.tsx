@@ -1,11 +1,11 @@
 "use client"
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea, TooltipProps } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, TooltipProps } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { cholesterolData } from "../data/cholesterolData";
 
 const hdlData = cholesterolData.HDL;
-const minHDL = 40;  // Force Y-axis minimum to be 20
+const minHDL = 20;  // Force Y-axis minimum to be 20
 const maxHDL = 100; // Force Y-axis maximum to be 100
 
 // Generate evenly spaced Y-axis labels (every 10 units)
@@ -49,20 +49,6 @@ export function HDLChart() {
                         bottom: 20, // Reduced bottom margin since X-axis labels are removed
                     }}
                 >
-                    <defs>
-                        {/* Red gradient: Fully red at 65, fades out towards 75 */}
-                        <linearGradient id="fadeRed" x1="0" y1="1" x2="0" y2="0">
-                            <stop offset="0%" stopColor="red" stopOpacity={0.3} /> 
-                            <stop offset="100%" stopColor="red" stopOpacity={0} />
-                        </linearGradient>
-
-                        {/* Green gradient: Fully transparent at 65, becomes fully green as Y increases */}
-                        <linearGradient id="fadeGreen" x1="0" y1="1" x2="0" y2="0">
-                            <stop offset="0%" stopColor="green" stopOpacity={0} /> 
-                            <stop offset="100%" stopColor="green" stopOpacity={0.3} />
-                        </linearGradient>
-                    </defs>
-                    
                     <CartesianGrid strokeDasharray="3 3" />
                     
                     {/* X-Axis WITHOUT labels */}
@@ -84,14 +70,11 @@ export function HDLChart() {
                     {/* Custom Tooltip shows "Month: Value" */}
                     <Tooltip content={<CustomTooltip />} />
 
-                    {/* Fully red from Y=20 to 65 */}
-                    <ReferenceArea y1={minHDL} y2={65} stroke="none" fill="red" fillOpacity={0.2} />
+                    {/* Horizontal line at 65 (boundary value) */}
+                    <ReferenceLine y={60} stroke="gray" strokeDasharray="5 5" label="Low" />
 
-                    {/* Gradual fade from 65 to 75 (Red fades out) */}
-                    <ReferenceArea y1={65} y2={75} stroke="none" fill="url(#fadeRed)" />
-
-                    {/* Green fades in from 65 upwards, extending all the way to 100 */}
-                    <ReferenceArea y1={65} y2={maxHDL} stroke="none" fill="url(#fadeGreen)" />
+                     {/* Horizontal line at 65 (boundary value) */}
+                    <ReferenceLine y={70} stroke="gray" strokeDasharray="5 5" label="Borderline low" />
 
                     {/* Line chart for HDL values */}
                     <Line type="monotone" dataKey="value" stroke="blue" strokeWidth={2} />

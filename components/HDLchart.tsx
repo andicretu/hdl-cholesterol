@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, TooltipProps } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
@@ -16,12 +16,13 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
     if (active && payload && payload.length) {
         return (
             <div style={{
-                backgroundColor: "white",
-                border: "1px solid #ccc",
+                backgroundColor: "black",
+                border: "1px solid gray",
                 padding: "8px",
                 borderRadius: "5px",
                 fontSize: "14px",
-                boxShadow: "0px 0px 5px rgba(0,0,0,0.2)"
+                color: "white",
+                boxShadow: "0px 0px 5px rgba(255,255,255,0.2)"
             }}>
                 <strong>{payload[0].payload.month}</strong>: {payload[0].value} mg/dL
             </div>
@@ -32,52 +33,56 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
 
 export function HDLChart() {
     return (
-        <Card>
+        <Card className="bg-white text-black border border-gray-700 shadow-md">
             <CardHeader>
                 <CardTitle>HDL Chart</CardTitle>
                 <CardDescription>Recorded HDL levels</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="bg-white p-4">
                 <LineChart
                     width={500}
                     height={300}
                     data={hdlData}
                     margin={{
                         top: 15,
-                        right: 30,
-                        left: 50,  // Increased left margin for Y-axis label
-                        bottom: 20, // Reduced bottom margin since X-axis labels are removed
+                        right: 60,
+                        left: 50,
+                        bottom: 40,
                     }}
+                    style={{ backgroundColor: "white", borderRadius: "8px" }} // Chart background
                 >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    
-                    {/* X-Axis WITHOUT labels */}
-                    <XAxis dataKey="month" tick={false} />
+                    {/* Gray Grid Lines */}
+                    <CartesianGrid horizontal={true} vertical={false} stroke="#999999" strokeDasharray="10 10" />
 
-                    {/* Y-Axis with label */}
+
+                    {/* White Axis Labels */}
+                    <XAxis 
+                        dataKey="month" 
+                        stroke="black"
+                        tickFormatter={(value) => value.slice(0, 3)} 
+                    />
                     <YAxis 
                         dataKey="value" 
-                        domain={[minHDL, maxHDL]}  // Fixed Y-axis range 20-100
-                        ticks={yTicks}  // Labels at 20, 30, 40, ..., 100
+                        domain={[minHDL, maxHDL]}  
+                        ticks={yTicks}  
+                        stroke="black" 
                         label={{ 
                             value: "HDL Levels (mg/dL)", 
                             angle: -90, 
                             position: "insideLeft", 
-                            dy: 50 
-                        }} // Y-axis label
+                            dy: 50,
+                            fill: "black",
+                        }} 
                     />
-                    
-                    {/* Custom Tooltip shows "Month: Value" */}
+
+                    {/* Tooltip with Black Background */}
                     <Tooltip content={<CustomTooltip />} />
 
-                    {/* Horizontal line at 65 (boundary value) */}
-                    <ReferenceLine y={60} stroke="gray" strokeDasharray="5 5" label="Low" />
+                    {/* Reference Lines in Gray */}
+                    <ReferenceLine y={60} stroke="gray" strokeDasharray="5 5" label={{value: "Low", position: "top", fill: "black"}} />
+                    <ReferenceLine y={70} stroke="gray" strokeDasharray="5 5" label={{value: "Borderline Low", position: "top", fill: "black"}} />
 
-                     {/* Horizontal line at 65 (boundary value) */}
-                    <ReferenceLine y={70} stroke="gray" strokeDasharray="5 5" label="Borderline low" />
-
-                    {/* Line chart for HDL values */}
-                    <Line type="monotone" dataKey="value" stroke="blue" strokeWidth={2} />
+                    <Line type="monotone" dataKey="value" stroke="#00BFFF" strokeWidth={2} />
                 </LineChart>
             </CardContent>
         </Card>

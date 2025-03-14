@@ -13,9 +13,6 @@ const maxHDL = 100;
 const LOW = 60;
 const BORDERLINE_LOW = 70;
 
-// Calculate percentage positions based on actual values
-
-
 const yTicks = Array.from({ length: (maxHDL - minHDL) / 10 + 1 }, (_, i) => minHDL + i * 10);
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload }) => {
@@ -54,26 +51,25 @@ export function HDLChart() {
                 >
                     <defs>
                         <linearGradient 
-                            id="colorAxis" 
-                            x1="0" 
-                            x2="0" 
-                            y1="0" 
-                            y2="1"
-                            gradientUnits="userSpaceOnUse"
+                            id="gradientBar" 
+                            x1="0" y1="0" 
+                            x2="0" y2="1"
                         >
-                            {/* Red (20-60) - Bottom 50% */}
-                            <stop offset="0%" stopColor="#ff4444" />
-                            <stop offset="50%" stopColor="#ff4444" />
-                            
-                            {/* Yellow (60-70) - Middle 12.5% */}
-                            <stop offset="50%" stopColor="#FFEB3B" />
-                            <stop offset="62.5%" stopColor="#FFEB3B" />
-                            
-                            {/* Green (70-100) - Top 37.5% */}
-                            <stop offset="62.5%" stopColor="#4CAF50" />
-                            <stop offset="100%" stopColor="#4CAF50" />
+                            <stop offset="0%" stopColor="green" />
+                            <stop offset="62.5%" stopColor="green" />
+
+                            <stop offset="62.5%" stopColor="yellow" />
+                            <stop offset="75%" stopColor="yellow" />
+
+                            <stop offset="75%" stopColor="red" />
+                            <stop offset="100%" stopColor="red" />
                         </linearGradient>
                     </defs>
+
+                    {/* ✅ Render the colored bar inside the chart */}
+                    <svg x={40} y={0} width={10} height={300}>
+                        <rect x="0" y="0" width="10" height="100%" fill="url(#gradientBar)" />
+                    </svg>
 
                     <CartesianGrid 
                         horizontal={true} 
@@ -92,11 +88,7 @@ export function HDLChart() {
                         dataKey="value" 
                         domain={[minHDL, maxHDL]}  
                         ticks={yTicks}  
-                        axisLine={{ 
-                            stroke: "url(#colorAxis)", 
-                            strokeWidth: 10,
-                            strokeLinecap: "butt" 
-                        }}
+                        stroke="black" 
                         tickLine={{ stroke: "black" }}
                         label={{ 
                             value: "HDL Levels (mg/dL)", 
